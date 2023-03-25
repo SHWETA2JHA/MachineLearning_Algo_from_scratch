@@ -1,0 +1,10 @@
+K-Nearest Neighbors (KNN) classification is a simple machine learning algorithm used for classification problems.
+The algorithm works by finding the k nearest data points in the training set to the new data point and then assigning a label to the new data point based on the most 
+common label among its k nearest neighbors.
+
+
+The value of k is a hyperparameter that needs to be specified prior to training the model. Larger values of k lead to smoother decision boundaries and can help reduce 
+overfitting, while smaller values of k lead to more complex decision boundaries that can better capture local patterns in the data.
+
+The KNN algorithm is simple and easy to implement, but it can be computationally expensive for large datasets since it requires calculating the distances between the new
+data point and all the data points in the training set. It also assumes that all features are equally important, which may not be true for all datasets.
