@@ -1,0 +1,9 @@
+The K-nearest neighbor algorithm creates an imaginary boundary to classify the data. When new data points are added for prediction, the algorithm adds that point to 
+the nearest of the boundary line. It follows the principle of “Birds of a feather flock together.” This algorithm can easily be implemented in the R language.
+
+ K-NN Algorithm
+1. Select K, the number of neighbors.
+2. Calculate the Euclidean distance of the K number of neighbors.
+3. Take the K nearest neighbors as per the calculated Euclidean distance.
+4. Count the number of data points in each category among these K neighbors.
+5. The new data point is assigned to the category for which the number of the neighbor is maximum.
