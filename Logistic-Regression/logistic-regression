@@ -1,0 +1,8 @@
+Logistic regression is a statistical technique used for binary classification problems. It models the probability of an event occurring given a set of input features. 
+The output of logistic regression is a probability value between 0 and 1, which can be interpreted as the likelihood of the event occurring.
+
+Logistic regression is widely used in various fields such as healthcare, finance, and marketing, where binary classification is a common task. It can handle both 
+numerical and categorical input features and is relatively easy to interpret compared to other classification models.
+
+In logistic regression, the model is trained by optimizing a cost function using a technique called gradient descent. The cost function is typically the log-likelihood
+of the training data, which measures the difference between the predicted probabilities and the actual binary labels.
