@@ -1,0 +1,47 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Load the Boston Housing dataset
+df = pd.read_csv('Boston.csv')
+
+# Select two features for clustering
+X = df[['rm', 'lstat']].values
+
+# Normalize the data
+X = (X - X.mean(axis=0)) / X.std(axis=0)
+
+# Set the number of clusters
+K = 3
+
+# Initialize centroids randomly
+centroids = X[np.random.choice(X.shape[0], K, replace=False)]
+
+# Initialize cluster assignments
+C = np.zeros(X.shape[0])
+
+# Set the maximum number of iterations
+max_iter = 100
+
+# Run the k-means algorithm
+for i in range(max_iter):
+    # Assign data points to clusters
+    for j in range(X.shape[0]):
+        dists = np.linalg.norm(X[j] - centroids, axis=1)
+        C[j] = np.argmin(dists)
+
+    # Update centroids
+    for k in range(K):
+        centroids[k] = np.mean(X[C == k], axis=0)
+
+# Plot the clusters
+plt.figure(figsize=(10, 8))
+plt.scatter(X[C == 0][:, 0], X[C == 0][:, 1], c='r', label='Cluster 1')
+plt.scatter(X[C == 1][:, 0], X[C == 1][:, 1], c='g', label='Cluster 2')
+plt.scatter(X[C == 2][:, 0], X[C == 2][:, 1], c='b', label='Cluster 3')
+plt.scatter(centroids[:, 0], centroids[:, 1], marker='*', s=300,
+            c='black', label='Centroids')
+plt.xlabel('RM')
+plt.ylabel('LSTAT')
+plt.legend()
+plt.show()
