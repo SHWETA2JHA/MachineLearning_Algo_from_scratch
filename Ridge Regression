@@ -1,0 +1,36 @@
+import numpy as np
+import matplotlib.pyplot as mpt   
+import pandas as pd
+
+data_set= pd.read_csv('housing.csv') 
+
+#Extracting dependent and independent variables
+x= np.array(data_set.iloc[:,:-1].values)
+y= np.array(data_set.iloc[:,13].values)
+
+#Splitting of data
+from sklearn.model_selection import train_test_split  
+x_train, x_test, y_train, y_test= train_test_split(x, y, test_size= 0.2, random_state=0)
+
+lambda_ridge=0.5
+# B^ computation:
+x_trans=x.transpose()
+res1=(np.dot(x_trans,x))+(lambda_ridge*np.identity(13))
+res2=np.dot(x_trans,y)
+B_cap=np.dot((np.linalg.inv(res1)),res2)
+
+#Ridge Regression
+beta_0=0.0
+for i in range (len(y_train)):
+    beta_0+=y_train[i]
+beta_0/=len(y_train)
+
+B_cap_tilde=(np.matrix(np.concatenate(([beta_0],B_cap), axis=None))).transpose()
+
+y_predicted= []
+for each in range(len(x_test)):
+    x_test_tilde= (np.matrix(np.concatenate(([1],x_test[each]), axis=None))).transpose()
+    #print(x_test_tilde)
+    y_predicted.append(np.dot(B_cap_tilde.transpose(),x_test_tilde).tolist()[0])
+y_predicted= np.array(y_predicted).flatten()
+print(y_predicted)
