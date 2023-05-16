@@ -1,0 +1,82 @@
+import numpy as np
+import matplotlib.pyplot as mpt   
+import pandas as pd
+
+data_set= pd.read_csv('housing.csv') 
+
+data_set
+
+def testData(y_test,y_predicted):
+    #Testing
+    
+    y_predicted=y_predicted.flatten()
+    err = 0.0
+    for i in range(len(y_test)):
+        err+=((y_test[i]-y_predicted[i])**2)
+    print("Error in the data : ",err/len(y_test))
+
+def multipleLinearRegression(data_set):
+    #Extracting dependent and independent variables
+
+    x= np.array(data_set.iloc[:,:-1].values)
+    y= np.array(data_set.iloc[:,13].values)
+
+    #Splitting of datta
+    from sklearn.model_selection import train_test_split  
+    x_train, x_test, y_train, y_test= train_test_split(x, y, test_size= 0.2, random_state=0) 
+
+    # Multiple Linear Regression
+
+    # B^ computation:
+    x_trans=x.transpose()
+    res1=np.dot(x_trans,x)
+    res2=np.dot(x_trans,y)
+    B_cap=np.dot((np.linalg.inv(res1)),res2)
+
+    B_cap_tilde=(np.matrix(np.concatenate(([1],B_cap), axis=None))).transpose()
+    y_predicted= []
+
+    for each in range(len(x_test)):
+        x_test_tilde= (np.matrix(np.concatenate(([1],x_test[each]), axis=None))).transpose()
+        #print(x_test_tilde)
+
+        y_predicted.append(np.dot(B_cap_tilde.transpose(),x_test_tilde).tolist()[0])
+        #print(y_predicted)
+    y_predicted= np.array(y_predicted)
+    testData(y_test,y_predicted)
+    
+multipleLinearRegression(data_set)
+
+#Extracting dependent and independent variables
+
+x= np.array(data_set.iloc[:,:-1].values)
+y= np.array(data_set.iloc[:,13].values)
+print(x)
+print(y)
+
+#Splitting of datta
+from sklearn.model_selection import train_test_split  
+x_train, x_test, y_train, y_test= train_test_split(x, y, test_size= 0.2, random_state=0) 
+
+print(x_test)
+print(x_train)
+print(y_test)
+print(y_train)
+
+# B^ computation:
+x_trans=x.transpose()
+res1=np.dot(x_trans,x)
+res2=np.dot(x_trans,y)
+B_cap=np.dot((np.linalg.inv(res1)),res2)
+
+B_cap_tilde=(np.matrix(np.concatenate(([1],B_cap), axis=None))).transpose()
+
+y_predicted= []
+
+for each in range(len(x_test)):
+    x_test_tilde= (np.matrix(np.concatenate(([1],x_test[each]), axis=None))).transpose()
+    
+    y_predicted.append(np.dot(B_cap_tilde.transpose(),x_test_tilde))
+   
+y_predicted= np.array(y_predicted)
+print(y_predicted)
