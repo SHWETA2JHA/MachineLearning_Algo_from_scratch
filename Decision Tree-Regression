@@ -1,0 +1,92 @@
+import pandas as pd
+import numpy as np
+
+df = pd.read_csv('Boston.csv')
+
+X = df.drop('medv', axis=1)
+
+y = df['medv']
+
+np.random.seed(0)
+train_mask = np.random.rand(len(df)) < 0.8
+X_train, y_train = X[train_mask], y[train_mask]
+X_test, y_test = X[~train_mask], y[~train_mask]
+
+def decision_tree_regression(X_train, y_train, X_test):
+    # Calculate the mean of the target variable for the training set
+    y_mean = y_train.mean()
+
+    # Define the function to calculate the mean squared error
+    def mse(y):
+        return ((y - y_mean) ** 2).mean()
+
+    # Define the function to find the best split for a given feature
+    def find_split(X, y):
+        # Sort the feature values
+        sort_idx = X.argsort()
+        X = X[sort_idx]
+        y = y[sort_idx]
+
+        # Initialize the variables to keep track of the best split
+        best_mse = float('inf')
+        best_split = None
+
+        # Loop over all possible split positions
+        for i in range(len(X) - 1):
+            # Calculate the mean of the target variable for each subset
+            left_mean = y[:i+1].mean()
+            right_mean = y[i+1:].mean()
+
+            # Calculate the mean squared error for each subset
+            left_mse = mse(y[:i+1])
+            right_mse = mse(y[i+1:])
+
+            # Calculate the total mean squared error for the split
+            split_mse = left_mse + right_mse
+
+            # Update the best split if necessary
+            if split_mse < best_mse:
+                best_mse = split_mse
+                best_split = (X[i] + X[i+1]) / 2
+
+        return best_split, best_mse
+
+    # Define the function to recursively build the tree
+    def build_tree(X_train, y_train, X_test):
+        # If there is only one data point, return the mean of the target variable
+        if len(y_train) == 1:
+            return y_train[0]
+
+        # If all data points have the same target value, return that value
+        if len(np.unique(y_train)) == 1:
+            return y_train[0]
+
+        # Find the best split for each feature
+        best_split = None
+        best_mse = float('inf')
+        for feature in X_train.columns:
+            X_train_feature = X_train[feature]
+            X_test_feature = X_test[feature]
+            split, mse = find_split(X_train_feature, y_train)
+            if mse < best_mse:
+                best_split = split
+                best_feature = feature
+                best_mse = mse
+
+        # Split the data into left and right subsets
+        left_mask = X_train[best_feature] < best_split
+        right_mask = X_train[best_feature] >= best_split
+        X_train_left, y_train_left = X_train[left_mask], y_train[left_mask]
+        X_train_right, y_train_right = X_train[right_mask], y_train[right_mask]
+        X_test_left, X_test_right = X_test[left_mask], X
+import matplotlib.pyplot as plt
+from sklearn.tree import DecisionTreeRegressor, plot_tree
+
+# Fit the decision tree regression model to the training data
+model = DecisionTreeRegressor(max_depth=3)
+model.fit(X_train, y_train)
+
+# Plot the decision tree
+plt.figure(figsize=(10, 8))
+plot_tree(model, filled=True, feature_names=X_train.columns)
+plt.show()
